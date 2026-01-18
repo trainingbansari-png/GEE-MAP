@@ -1,5 +1,4 @@
-import geemap.foliumap as geemap
-import folium
-import streamlit as st
-from streamlit_folium import st_folium
-
+streamlit==1.31.1
+earthengine-api==0.1.389
+folium==0.20.0
+streamlit-folium==0.18.0
