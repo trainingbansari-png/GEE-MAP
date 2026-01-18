@@ -9,7 +9,22 @@ from datetime import date
 # ----------------------------------
 # Earth Engine Initialization
 # ----------------------------------
-ee.Initialize(project="tactical-unison-484708-p7")
+import streamlit as st
+import ee
+import json
+
+# Load EE credentials from Streamlit secrets
+key_dict = json.loads(json.dumps(st.secrets["ee"]))
+
+credentials = ee.ServiceAccountCredentials(
+    key_dict["my-project@tactical-unison-484708-p7.iam.gserviceaccount.com"],
+    key_dict
+)
+
+ee.Initialize(credentials)
+
+st.success("Earth Engine initialized successfully")
+
 
 # ----------------------------------
 # Streamlit Configuration
