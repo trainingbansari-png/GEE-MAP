@@ -1,0 +1,24 @@
+streamlit>=1.30
+earthengine-api
+geemap
+folium
+Installing earthengine-api ...
+Successfully installed earthengine-api
+import streamlit as st
+import ee
+import json
+
+# ----------------------------------
+# Earth Engine Authentication
+# ----------------------------------
+service_account = st.secrets["GEE_SERVICE_ACCOUNT"]
+key_dict = json.loads(st.secrets["GEE_PRIVATE_KEY"])
+
+credentials = ee.ServiceAccountCredentials(
+    service_account=service_account,
+    key_data=key_dict
+)
+
+ee.Initialize(credentials)
+
+st.success("✅ Earth Engine authenticated successfully")
