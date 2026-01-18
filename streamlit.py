@@ -2,13 +2,14 @@
 
 import streamlit as st
 import ee
-import geemap.foliumap as geemap
+import folium
+from streamlit_folium import st_folium
 from datetime import date
 
 # ----------------------------------
 # Earth Engine Initialization
 # ----------------------------------
-ee.Initialize(project="atlantean-talon-436010-c7")
+ee.Initialize(project="tactical-unison-484708-p7")
 
 # ----------------------------------
 # Streamlit Configuration
