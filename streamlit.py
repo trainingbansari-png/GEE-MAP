@@ -18,11 +18,13 @@ import json
 ee_secrets = dict(st.secrets["ee"])
 key_dict = json.loads(json.dumps(ee_secrets))
 
-credentials = ee.ServiceAccountCredentials(
-    key_dict["my-project@tactical-unison-484708-p7.iam.gserviceaccount.com"],
-    key_dict
-)
-
+#credentials = ee.ServiceAccountCredentials(
+#    key_dict["my-project@tactical-unison-484708-p7.iam.gserviceaccount.com"],
+#    key_dict
+#)
+ee_creds = dict(st.secrets["ee"])
+ee_creds["my-project@tactical-unison-484708-p7.iam.gserviceaccount.com"], 
+    key_data=ee_creds["private_key"]
 ee.Initialize(credentials)
 
 st.success("Earth Engine initialized successfully")
