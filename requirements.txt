@@ -4,4 +4,6 @@ folium==0.20.0
 streamlit-folium==0.18.0
 geemap
 setuptools
+ipython
+
 
