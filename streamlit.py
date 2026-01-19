@@ -76,9 +76,9 @@ if run:
         Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
         
         # Visualization parameters (Sentinel-2 True Color example)
-        vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000} if satellite == "Sentinel-2" else {}
+        vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000, 'gamma': 1.4} if satellite == "Sentinel-2" else {}
         
-        Map.addLayer(selected_image, vis_params, f"{satellite} Visualization")
+        Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
         Map.add_child(geemap.folium.GeoJson(roi.getInfo(), name="ROI"))
         
         # Display map
