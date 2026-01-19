@@ -14,7 +14,9 @@ import ee
 import json
 
 # Load EE credentials from Streamlit secrets
-key_dict = json.loads(json.dumps(st.secrets["ee"]))
+# Convert the Secrets object to a real dict first
+ee_secrets = dict(st.secrets["ee"])
+key_dict = json.loads(json.dumps(ee_secrets))
 
 credentials = ee.ServiceAccountCredentials(
     key_dict["my-project@tactical-unison-484708-p7.iam.gserviceaccount.com"],
