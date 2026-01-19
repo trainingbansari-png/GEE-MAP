@@ -1,9 +1,9 @@
-streamlit==1.31.1
-earthengine-api==0.1.389
-folium==0.20.0
-streamlit-folium==0.18.0
+streamlit
+earthengine-api
 geemap
-setuptools
 ipython
+setuptools
+
+
 
 
