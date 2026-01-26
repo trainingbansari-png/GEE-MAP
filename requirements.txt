@@ -1,11 +1,3 @@
-streamlit
-earthengine-api
-geemap
-ipython
-setuptools
 geemap>=0.30.0
 python-box==6.1.0
 streamlit
-
-
-
