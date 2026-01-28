@@ -135,4 +135,18 @@ if run:
         if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
             try:
                 # Add the ROI as a GeoJson object using geemap (correct method)
-                Map.add_geojson
+                Map.add_geojson(geojson, name="ROI")
+                st.write("GeoJSON layer added to map")
+            except Exception as e:
+                st.error(f"Error adding GeoJSON layer: {e}")
+                st.stop()
+        else:
+            st.error("GeoJSON format is invalid.")
+        
+        # Display the map using the correct method for geemap
+        try:
+            Map.to_streamlit(height=600)  # This should render the map in Streamlit
+            st.write("Map displayed successfully")
+        except Exception as e:
+            st.error(f"Error displaying map: {e}")
+            st.stop()
