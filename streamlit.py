@@ -74,6 +74,11 @@ if run:
     else:
         selected_image = collection.median().clip(roi)
         
+        # Check if the selected image is valid (not None or empty)
+        if selected_image is None:
+            st.error("Selected image is invalid!")
+            st.stop()
+        
         # Setup Map
         Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
         
@@ -84,7 +89,12 @@ if run:
             'gamma': 1.4
         } if satellite == "Sentinel-2" else {}
         
-        Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
+        # Check if the layer is being added properly
+        try:
+            Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
+        except Exception as e:
+            st.error(f"Error adding image layer: {e}")
+            st.stop()
         
         # Convert roi to GeoJSON format
         geojson = geemap.ee_to_geojson(roi)
@@ -94,10 +104,18 @@ if run:
         
         # Ensure the GeoJSON is in the correct format (dictionary)
         if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
-            # Add the ROI as a GeoJson object using folium
-            Map.add_child(folium.GeoJson(geojson, name="ROI"))
+            try:
+                # Add the ROI as a GeoJson object using folium
+                Map.add_child(folium.GeoJson(geojson, name="ROI"))
+            except Exception as e:
+                st.error(f"Error adding GeoJSON layer: {e}")
+                st.stop()
         else:
             st.error("GeoJSON format is invalid.")
         
         # Display map
-        Map.to_streamlit(height=600)
+        try:
+            Map.to_streamlit(height=600)
+        except Exception as e:
+            st.error(f"Error displaying map: {e}")
+            st.stop()
