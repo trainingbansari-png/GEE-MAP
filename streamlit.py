@@ -72,6 +72,7 @@ if run:
     if count == 0:
         st.warning("No images found for the specified criteria.")
     else:
+        # Take the median image for cleaner representation
         selected_image = collection.median().clip(roi)
         
         # Check if the selected image is valid (not None or empty)
@@ -79,18 +80,32 @@ if run:
             st.error("Selected image is invalid!")
             st.stop()
         
-        # Setup Map
-        Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
-        
+        # Visualize the image and check the values
         vis_params = {
             'bands': ['B4', 'B3', 'B2'],  # True color bands for Sentinel-2
             'min': 0, 
             'max': 3000, 
             'gamma': 1.4
         } if satellite == "Sentinel-2" else {}
+
+        # Check if the image has the expected bands
+        try:
+            image_bands = selected_image.bandNames().getInfo()
+            st.write(f"Image bands: {image_bands}")  # Display the bands to check if they match
+        except Exception as e:
+            st.write(f"Error reading bands: {e}")
         
-        Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
+        # Setup Map
+        Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
         
+        # Add the layer
+        try:
+            Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
+            st.write("Image layer added to map")
+        except Exception as e:
+            st.error(f"Error adding image to map: {e}")
+            st.stop()
+
         # Manually create the GeoJSON for the ROI (Rectangle)
         def create_geojson_from_roi(roi):
             coords = roi.coordinates().getInfo()[0]  # Extract coordinates of the rectangle
@@ -119,6 +134,7 @@ if run:
             try:
                 # Add the ROI as a GeoJson object using geemap (correct method)
                 Map.add_layer(folium.GeoJson(geojson, name="ROI"))
+                st.write("GeoJSON layer added to map")
             except Exception as e:
                 st.error(f"Error adding GeoJSON layer: {e}")
                 st.stop()
@@ -128,6 +144,7 @@ if run:
         # Display the map
         try:
             Map.to_streamlit(height=600)
+            st.write("Map displayed successfully")
         except Exception as e:
             st.error(f"Error displaying map: {e}")
             st.stop()
