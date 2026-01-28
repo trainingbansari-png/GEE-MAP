@@ -1,6 +1,7 @@
 import streamlit as st
 import ee
-import geemap.foliumap as gmf # Ensure geemap is imported
+import gee
+#import geemap.foliumap as gmf # Ensure geemap is imported
 from datetime import date
 import json
 
