@@ -12,7 +12,6 @@ st.set_page_config(layout="wide")
 if "ee" in st.secrets:
     try:
         ee_creds = dict(st.secrets["ee"])
-        # The replace ensures the RSA key is formatted correctly
         fixed_key = ee_creds["private_key"].replace("\\n", "\n")
         
         credentials = ee.ServiceAccountCredentials(
@@ -70,13 +69,14 @@ if run:
     count = collection.size().getInfo()
     st.write(f"🖼️ **Images Found:** {count}")
 
-    if count > 0:
-        selected_image = collection.median().clip(roi)  # Use median for a cleaner mosaic
+    if count == 0:
+        st.warning("No images found for the specified criteria.")
+    else:
+        selected_image = collection.median().clip(roi)
         
         # Setup Map
         Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
         
-        # Visualization parameters (Sentinel-2 True Color example)
         vis_params = {
             'bands': ['B4', 'B3', 'B2'],  # True color bands for Sentinel-2
             'min': 0, 
@@ -89,8 +89,15 @@ if run:
         # Convert roi to GeoJSON format
         geojson = geemap.ee_to_geojson(roi)
         
-        # Add the ROI as a GeoJson object using folium
-        Map.add_child(folium.GeoJson(geojson, name="ROI"))
+        # Debug: Print the GeoJSON structure
+        st.write(json.dumps(geojson, indent=2))  # This will show the structure of geojson
+        
+        # Ensure the GeoJSON is in the correct format (dictionary)
+        if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
+            # Add the ROI as a GeoJson object using folium
+            Map.add_child(folium.GeoJson(geojson, name="ROI"))
+        else:
+            st.error("GeoJSON format is invalid.")
         
         # Display map
         Map.to_streamlit(height=600)
