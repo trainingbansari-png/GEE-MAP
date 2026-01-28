@@ -89,20 +89,32 @@ if run:
             'gamma': 1.4
         } if satellite == "Sentinel-2" else {}
         
-        # Check if the layer is being added properly
-        try:
-            Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
-        except Exception as e:
-            st.error(f"Error adding image layer: {e}")
-            st.stop()
+        Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
         
-        # Convert roi to GeoJSON format
-        geojson = geemap.ee_to_geojson(roi)
-        
-        # Debug: Print the GeoJSON structure
-        st.write(json.dumps(geojson, indent=2))  # This will show the structure of geojson
-        
-        # Ensure the GeoJSON is in the correct format (dictionary)
+        # Manually create the GeoJSON for the ROI (Rectangle)
+        def create_geojson_from_roi(roi):
+            coords = roi.coordinates().getInfo()[0]  # Extract coordinates of the rectangle
+            geojson = {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [coords]  # Coordinates for the polygon
+                        },
+                        "properties": {}
+                    }
+                ]
+            }
+            return geojson
+
+        geojson = create_geojson_from_roi(roi)
+
+        # Debugging: Print GeoJSON structure
+        st.write(json.dumps(geojson, indent=2))  # Display GeoJSON structure
+
+        # Ensure GeoJSON is valid
         if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
             try:
                 # Add the ROI as a GeoJson object using folium
@@ -113,7 +125,7 @@ if run:
         else:
             st.error("GeoJSON format is invalid.")
         
-        # Display map
+        # Display the map
         try:
             Map.to_streamlit(height=600)
         except Exception as e:
