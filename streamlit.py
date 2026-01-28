@@ -99,8 +99,8 @@ if run:
         
         # Setup Map
         Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=10)
-        
-        # Add the layer
+
+        # Add the layer to map
         try:
             Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
             st.write("Image layer added to map")
@@ -142,16 +142,6 @@ if run:
                 st.stop()
         else:
             st.error("GeoJSON format is invalid.")
-        
-        # Debugging: Print the image URL to check if it is valid
-        try:
-            image_url = selected_image.getDownloadURL({
-                'scale': 30,
-                'region': roi
-            })
-            st.write(f"Image URL: {image_url}")  # Print the image URL for debugging
-        except Exception as e:
-            st.write(f"Error getting image URL: {e}")
         
         # Display the map using the correct method for geemap
         try:
