@@ -86,20 +86,22 @@ if run:
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
         
-        # Convert roi to geojson format for use in folium GeoJson (as LineString for bounding box)
+        # Convert roi to geojson format for use in folium GeoJson (as rectangle for bounding box)
         geojson = {
             "type": "FeatureCollection",
             "features": [
                 {
                     "type": "Feature",
                     "geometry": {
-                        "type": "LineString",
+                        "type": "rectangle",
                         "coordinates": [
-                            [lon_ul, lat_ul],
-                            [lon_lr, lat_ul],
-                            [lon_lr, lat_lr],
-                            [lon_ul, lat_lr],
-                            [lon_ul, lat_ul]
+                            [
+                                [lon_ul, lat_ul],
+                                [lon_lr, lat_ul],
+                                [lon_lr, lat_lr],
+                                [lon_ul, lat_lr],
+                                [lon_ul, lat_ul]  # Closing the rectangle by repeating the first point
+                            ]
                         ]
                     },
                     "properties": {}
