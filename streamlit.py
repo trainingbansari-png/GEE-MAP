@@ -2,7 +2,7 @@ import streamlit as st
 import ee
 import geemap
 from datetime import date
-from oauth2client.service_account import ServiceAccountCredentials  # Missing import for ServiceAccountCredentials
+from oauthclient.service_account import ServiceAccountCredentials  # Missing import for ServiceAccountCredentials
 
 # 1. MUST BE FIRST
 st.set_page_config(layout="wide")
