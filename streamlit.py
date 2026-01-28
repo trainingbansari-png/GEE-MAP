@@ -81,7 +81,7 @@ if run:
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
         geojson = geemap.ee_to_geojson(roi)
-        Map.add_child(geemap.folium.GeoJson(roi.getInfo(), name="ROI"))
+        Map.add_child(geemap.GeoJson(roi.getInfo(), name="ROI"))
         
         # Display map
         Map.to_streamlit(height=600)
