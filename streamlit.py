@@ -2,7 +2,8 @@ import streamlit as st
 import ee
 import geemap
 from datetime import date
-from oauthclient.service_account import ServiceAccountCredentials  # Missing import for ServiceAccountCredentials
+from google.oauth2 import service_account  # Correct import for credentials
+from google.auth.transport.requests import Request  # Optional, used for token refresh
 
 # 1. MUST BE FIRST
 st.set_page_config(layout="wide")
