@@ -92,11 +92,13 @@ if run:
         try:
             image_bands = selected_image.bandNames().getInfo()
             st.write(f"Image bands: {image_bands}")  # Display the bands to check if they match
+            if len(image_bands) == 0:
+                st.warning("No bands found in the selected image!")
         except Exception as e:
             st.write(f"Error reading bands: {e}")
         
         # Setup Map
-        Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
+        Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=10)
         
         # Add the layer
         try:
@@ -133,18 +135,4 @@ if run:
         if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
             try:
                 # Add the ROI as a GeoJson object using geemap (correct method)
-                Map.add_layer(folium.GeoJson(geojson, name="ROI"))
-                st.write("GeoJSON layer added to map")
-            except Exception as e:
-                st.error(f"Error adding GeoJSON layer: {e}")
-                st.stop()
-        else:
-            st.error("GeoJSON format is invalid.")
-        
-        # Display the map using the correct method for geemap
-        try:
-            Map.to_streamlit(height=600)  # This should render the map in Streamlit
-            st.write("Map displayed successfully")
-        except Exception as e:
-            st.error(f"Error displaying map: {e}")
-            st.stop()
+                Map.add_geojson
