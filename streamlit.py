@@ -86,16 +86,28 @@ if run:
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
         
-        # Convert roi to geojson format for use in folium GeoJson
-        geojson = geemap.ee_to_geojson(roi)
+        # Convert roi to geojson format for use in folium GeoJson (as LineString for bounding box)
+        geojson = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [lon_ul, lat_ul],
+                            [lon_lr, lat_ul],
+                            [lon_lr, lat_lr],
+                            [lon_ul, lat_lr],
+                            [lon_ul, lat_ul]
+                        ]
+                    },
+                    "properties": {}
+                }
+            ]
+        }
         
-        # Check if geojson is a valid dictionary
-        if isinstance(geojson, dict):
-            st.write("GeoJSON is a valid dictionary!")
-        else:
-            st.error("GeoJSON is not a valid dictionary.")
-        
-        # Display the geojson structure
+        # Display the geojson structure for debugging
         st.write(json.dumps(geojson, indent=2))
 
         # Add ROI as a GeoJson object using folium.GeoJson
@@ -103,8 +115,3 @@ if run:
         
         # Display map
         Map.to_streamlit(height=600)
-
-
-
- 
-    
