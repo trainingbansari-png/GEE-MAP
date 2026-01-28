@@ -80,6 +80,7 @@ if run:
         vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000, 'gamma': 1.4} if satellite == "Sentinel-2" else {}
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
+        geojson = geemap.ee_to_geojson(roi)
         Map.add_child(geemap.folium.GeoJson(roi.getInfo(), name="ROI"))
         
         # Display map
