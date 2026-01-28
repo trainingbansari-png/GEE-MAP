@@ -135,7 +135,7 @@ if run:
         if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
             try:
                 # Add the ROI as a GeoJson object using geemap (correct method)
-                Map.add_geojson(geojson, name="ROI")
+                Map.add_geojson(geojson)  # Removed the 'name' argument
                 st.write("GeoJSON layer added to map")
             except Exception as e:
                 st.error(f"Error adding GeoJSON layer: {e}")
