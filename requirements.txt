@@ -1,6 +1,8 @@
-geemap>=0.30.0
+geemap
 python-box==6.1.0
 streamlit
+folium
+
 
 
 
