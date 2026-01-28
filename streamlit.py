@@ -143,6 +143,16 @@ if run:
         else:
             st.error("GeoJSON format is invalid.")
         
+        # Debugging: Print the image URL to check if it is valid
+        try:
+            image_url = selected_image.getDownloadURL({
+                'scale': 30,
+                'region': roi
+            })
+            st.write(f"Image URL: {image_url}")  # Print the image URL for debugging
+        except Exception as e:
+            st.write(f"Error getting image URL: {e}")
+        
         # Display the map using the correct method for geemap
         try:
             Map.to_streamlit(height=600)  # This should render the map in Streamlit
