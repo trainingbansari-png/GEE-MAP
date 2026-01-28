@@ -1,9 +1,8 @@
 import streamlit as st
 import ee
 import geemap
-#import geemap.foliumap as gmf # Ensure geemap is imported
 from datetime import date
-import json
+from oauth2client.service_account import ServiceAccountCredentials  # Missing import for ServiceAccountCredentials
 
 # 1. MUST BE FIRST
 st.set_page_config(layout="wide")
@@ -15,7 +14,7 @@ if "ee" in st.secrets:
         # The replace ensures the RSA key is formatted correctly
         fixed_key = ee_creds["private_key"].replace("\\n", "\n")
         
-        credentials = ee.ServiceAccountCredentials(
+        credentials = ServiceAccountCredentials(
             ee_creds["client_email"], 
             key_data=fixed_key
         )
@@ -71,18 +70,25 @@ if run:
     st.write(f"🖼️ **Images Found:** {count}")
 
     if count > 0:
-        selected_image = collection.median().clip(roi) # Use median for a cleaner mosaic
+        selected_image = collection.median().clip(roi)  # Use median for a cleaner mosaic
         
         # Setup Map
         Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
         
         # Visualization parameters (Sentinel-2 True Color example)
-        vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000, 'gamma': 1.4} if satellite == "Sentinel-2" else {}
+        vis_params = {}
+        if satellite == "Sentinel-2":
+            vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000, 'gamma': 1.4}
+        elif satellite in ["Landsat-8", "Landsat-9"]:
+            vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 0.3}
+        elif satellite == "MODIS":
+            vis_params = {'bands': ['sur_refl_b01', 'sur_refl_b04', 'sur_refl_b03'], 'min': 0, 'max': 5000}
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
         geojson = geemap.ee_to_geojson(roi)
-        Map.add(geemap.folium.GeoJson(roi.getInfo(), name="ROI"))
+        Map.add(geemap.folium.GeoJson(geojson, name="ROI"))
         
         # Display map
         Map.to_streamlit(height=600)
-
+    else:
+        st.error("No images found for the selected criteria.")
