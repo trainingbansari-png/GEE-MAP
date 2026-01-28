@@ -117,8 +117,8 @@ if run:
         # Ensure GeoJSON is valid
         if isinstance(geojson, dict) and "type" in geojson and "features" in geojson:
             try:
-                # Add the ROI as a GeoJson object using folium
-                Map.add_child(folium.GeoJson(geojson, name="ROI"))
+                # Add the ROI as a GeoJson object using geemap (correct method)
+                Map.add_layer(folium.GeoJson(geojson, name="ROI"))
             except Exception as e:
                 st.error(f"Error adding GeoJSON layer: {e}")
                 st.stop()
