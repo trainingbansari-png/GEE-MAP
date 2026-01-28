@@ -3,8 +3,7 @@ import ee
 import geemap
 from datetime import date
 import json
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
+import folium
 
 # 1. MUST BE FIRST
 st.set_page_config(layout="wide")
@@ -90,8 +89,8 @@ if run:
         # Convert roi to geojson format for use in folium GeoJson
         geojson = geemap.ee_to_geojson(roi)
         
-        # Add ROI as a GeoJson object
-        Map.add_child(geemap.folium.GeoJson(geojson, name="ROI"))
+        # Add ROI as a GeoJson object using folium.GeoJson
+        Map.add_child(folium.GeoJson(geojson, name="ROI"))
         
         # Display map
         Map.to_streamlit(height=600)
