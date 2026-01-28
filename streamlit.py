@@ -141,9 +141,9 @@ if run:
         else:
             st.error("GeoJSON format is invalid.")
         
-        # Display the map
+        # Display the map using the correct method for geemap
         try:
-            Map.to_streamlit(height=600)
+            Map.to_streamlit(height=600)  # This should render the map in Streamlit
             st.write("Map displayed successfully")
         except Exception as e:
             st.error(f"Error displaying map: {e}")
