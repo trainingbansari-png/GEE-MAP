@@ -1,6 +1,7 @@
 import streamlit as st
 import ee
 import geemap
+import folium
 #import geemap.foliumap as gmf # Ensure geemap is imported
 from datetime import date
 import json
@@ -80,8 +81,7 @@ if run:
         vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000, 'gamma': 1.4} if satellite == "Sentinel-2" else {}
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
-        geojson = geemap.ee_to_geojson(roi)
-        Map.add_child(geemap.GeoJson(roi.getInfo(), name="ROI"))
-        
+        geojson = folium.GeoJson(roi.getInfo(), name="ROI")
+        geojson.add_to(Map)
         # Display map
         Map.to_streamlit(height=600)
