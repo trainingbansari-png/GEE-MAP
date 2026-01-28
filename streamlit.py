@@ -1,9 +1,10 @@
 import streamlit as st
 import ee
 import geemap
-#import geemap.foliumap as gmf # Ensure geemap is imported
 from datetime import date
 import json
+from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 
 # 1. MUST BE FIRST
 st.set_page_config(layout="wide")
@@ -71,17 +72,26 @@ if run:
     st.write(f"🖼️ **Images Found:** {count}")
 
     if count > 0:
-        selected_image = collection.median().clip(roi) # Use median for a cleaner mosaic
+        selected_image = collection.median().clip(roi)  # Use median for a cleaner mosaic
         
         # Setup Map
         Map = geemap.Map(center=[(lat_ul + lat_lr) / 2, (lon_ul + lon_lr) / 2], zoom=8)
         
         # Visualization parameters (Sentinel-2 True Color example)
-        vis_params = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 3000, 'gamma': 1.4} if satellite == "Sentinel-2" else {}
+        vis_params = {
+            'bands': ['B4', 'B3', 'B2'],  # True color bands for Sentinel-2
+            'min': 0, 
+            'max': 3000, 
+            'gamma': 1.4
+        } if satellite == "Sentinel-2" else {}
         
         Map.addLayer(selected_image, vis_params, f"{satellite} True Color")
+        
+        # Convert roi to geojson format for use in folium GeoJson
         geojson = geemap.ee_to_geojson(roi)
-        Map.add_child(geemap.folium.GeoJson(roi.getInfo(), name="ROI"))
+        
+        # Add ROI as a GeoJson object
+        Map.add_child(geemap.folium.GeoJson(geojson, name="ROI"))
         
         # Display map
         Map.to_streamlit(height=600)
